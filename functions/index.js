@@ -1,9 +1,9 @@
 // REF: Configuración: https://cloud.google.com/firestore/docs/quickstart
 const admin = require('firebase-admin');
-const functions = require('firebase-functions/v1');
+const { onCall, HttpsError } = require('firebase-functions/v2/https');
 
-// Inicializar la aplicación
-admin.initializeApp(functions.config().firebase);
+// Inicializar la aplicación (usa Application Default Credentials automáticamente en v2)
+admin.initializeApp();
 
 // Obtener la referencia a Firestore
 let db = admin.firestore();
@@ -12,16 +12,16 @@ let db = admin.firestore();
 const Hashids = require('hashids/cjs');
 
 // Generar el código de aula y retornarlo
-exports.nuevoCodigo = functions
-    .region('europe-west1')
-    .runWith({
+exports.nuevoCodigo = onCall(
+    {
+        region: 'europe-west1',
         enforceAppCheck: true,
-    })
-    .https.onCall((data, context) => {
+    },
+    (request) => {
 
-        // Verificar que haya un token de App Check válidos y, si no, retornar un error 401
-        if (context.app === undefined) {
-            throw new functions.https.HttpsError('failed-precondition', 'The function must be called from an App Check verified app.')
+        // Verificar que haya un token de App Check válido y, si no, retornar un error 401
+        if (request.app === undefined) {
+            throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
         }
 
         const hashids = new Hashids("turnoclase", 5, "123456789ABCDEFGHIJKLNPQRSTUVXYZ");
@@ -35,10 +35,10 @@ exports.nuevoCodigo = functions
             return t.get(refContador)
                 .then(doc => {
                     contador = doc.data().contador + 1;
-                    t.update(refContador, {contador: contador});
+                    t.update(refContador, { contador: contador });
                 });
         }).then(result => {
-            console.log('Nuevo código generado.');
+            console.log('Nuevo código generado.', result);
             return {
                 codigo: hashids.encode(contador)
             };
@@ -48,4 +48,5 @@ exports.nuevoCodigo = functions
                 codigo: "?"
             };
         });
-    });
+    }
+);

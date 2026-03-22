@@ -21,10 +21,10 @@ workspace:
 	@docker compose run -q --rm node /bin/bash
 
 update:
-	@docker compose run -q --rm node /bin/sh -c 'cd functions && npm update'
+	@docker compose run -q --rm node /bin/sh -c 'cd functions && npm update && npm install firebase-functions@latest firebase-admin@latest --save'
 	@echo Generando commit...
 	@sleep 5
-	@cd ../../ && git commit -a -m "Actualización de dependencias"
+	@git commit -a -m "Actualización de dependencias"
 
 deploy:
 	@docker compose run -q --rm --service-ports node /bin/sh -c 'firebase login && firebase use turnoclase-eu && firebase deploy --only functions'

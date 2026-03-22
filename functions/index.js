@@ -37,8 +37,8 @@ exports.nuevoCodigo = onCall(
                     contador = doc.data().contador + 1;
                     t.update(refContador, { contador: contador });
                 });
-        }).then(result => {
-            console.log('Nuevo código generado.', result);
+        }).then(() => {
+            console.log('Nuevo código generado.');
             return {
                 codigo: hashids.encode(contador)
             };

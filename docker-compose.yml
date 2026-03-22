@@ -1,0 +1,16 @@
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    tty: true
+    volumes:
+      - .:/firebase
+      - config:/home/node/.config
+    ports:
+      - "9005:9005"
+
+volumes:
+  config:

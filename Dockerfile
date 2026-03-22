@@ -18,3 +18,5 @@ WORKDIR /firebase
 RUN mkdir -p /home/node/.config && chown node:node /home/node/.config
 
 USER node
+
+ENV PS1='\u@\h:\w\$\040'

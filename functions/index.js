@@ -8,8 +8,8 @@ admin.initializeApp();
 // Obtener la referencia a Firestore
 let db = admin.firestore();
 
-// REF: Generador de IDs únicos: https://hashids.org
-const Hashids = require('hashids/cjs');
+// REF: Generador de IDs únicos: https://sqids.org/
+const Sqids = require("sqids");
 
 // Generar el código de aula y retornarlo
 exports.nuevoCodigo = onCall(
@@ -24,7 +24,10 @@ exports.nuevoCodigo = onCall(
             throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
         }
 
-        const hashids = new Hashids("turnoclase", 5, "123456789ABCDEFGHIJKLNPQRSTUVXYZ");
+        const sqids = new Sqids({
+            minLength: 5,
+            alphabet: '123456789ABCDEFGHIJKLNPQRSTUVXYZ',
+        })
 
         const refContador = db.collection('total').doc('aulas'); // Max: 234255 (9RRRR)
 
@@ -40,7 +43,7 @@ exports.nuevoCodigo = onCall(
         }).then(() => {
             console.log('Nuevo código generado.');
             return {
-                codigo: hashids.encode(contador)
+                codigo: sqids.encode(contador)
             };
         }).catch(err => {
             console.log('Error al generar el código:', err);

@@ -10,7 +10,7 @@ initializeApp();
 const db = getFirestore();
 
 // REF: Generador de IDs únicos: https://sqids.org/
-const Sqids = require("sqids");
+const Sqids = require("sqids").default;
 
 // Generar el código de aula y retornarlo
 exports.nuevoCodigo = onCall(
@@ -44,7 +44,7 @@ exports.nuevoCodigo = onCall(
         }).then(() => {
             console.log('Nuevo código generado.');
             return {
-                codigo: sqids.encode(contador)
+                codigo: sqids.encode([contador])
             };
         }).catch(err => {
             console.log('Error al generar el código:', err);

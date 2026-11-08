@@ -1,12 +1,13 @@
-// REF: Configuración: https://cloud.google.com/firestore/docs/quickstart
-const admin = require('firebase-admin');
+// REF: Configuración: https://firebase.google.com/docs/firestore/quickstart-server
+const { initializeApp } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 
-// Inicializar la aplicación (usa Application Default Credentials automáticamente en v2)
-admin.initializeApp();
+// Inicializar la aplicación
+initializeApp();
 
 // Obtener la referencia a Firestore
-let db = admin.firestore();
+const db = getFirestore();
 
 // REF: Generador de IDs únicos: https://sqids.org/
 const Sqids = require("sqids");
